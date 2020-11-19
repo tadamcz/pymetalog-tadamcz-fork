@@ -1,0 +1,8 @@
+setuptools~=50.3.2
+pandas~=1.1.4
+scipy~=1.5.4
+matplotlib~=3.3.3
+seaborn~=0.11.0
+
+# on windows I needed numpy 1.19.3, to avoid this bug: https://developercommunity.visualstudio.com/content/problem/1207405/fmod-after-an-update-to-windows-2004-is-causing-a.html 
+numpy==1.19.3
