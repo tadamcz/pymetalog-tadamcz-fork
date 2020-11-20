@@ -309,6 +309,7 @@ def newtons_method_metalog(m,q,term, bounds=None, boundedness=None):
   err = 1e-10
   temp_err = 0.1
   y_now = 0.5
+  maxiter = 1000
 
   i = 1
   while(temp_err>err):
@@ -326,7 +327,7 @@ def newtons_method_metalog(m,q,term, bounds=None, boundedness=None):
     y_now = y_next
     i = i+1
 
-    if i > 10000:
+    if i > maxiter:
       raise StopIteration('Approximation taking too long, quantile value: '+str(q)+' is to far from distribution median. Try plot() to see distribution.')
 
   return(y_now)

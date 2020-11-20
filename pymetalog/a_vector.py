@@ -169,11 +169,12 @@ def a_vector_OLS_and_LP(m_dict,
 
         # build a y vector for smaller data sets
         if len(z) < 100:
-            y2 = np.linspace(step_len, 1 - step_len, ((1 - step_len) / step_len))
+            y2 = np.linspace(step_len, 1 - step_len, int((1 - step_len) / step_len))
             tailstep = step_len / 10
-            y1 = np.linspace(tailstep, (min(y2) - tailstep), ((min(y2) - tailstep) / tailstep))
-            y3 = np.linspace((max(y2) + tailstep), (max(y2) + tailstep * 9), ((tailstep * 9) / tailstep))
+            y1 = np.linspace(tailstep, (min(y2) - tailstep), int((min(y2) - tailstep) / tailstep))
+            y3 = np.linspace((max(y2) + tailstep), (max(y2) + tailstep * 9), int((tailstep * 9) / tailstep))
             y = np.hstack((y1, y2, y3))
+
 
         # Get the dict and quantile values back for validation
         temp_dict = pdf_quantile_builder(temp, y=y, term_limit=i, bounds=bounds, boundedness=boundedness)
@@ -212,6 +213,8 @@ def a_vector_LP(m_dict, term_limit, term_lower_bound, diff_error = .001, diff_st
     """TODO: write docstring
 
     """
+    maxiter = 1000
+    tolerance = 1e-4
     cnames = np.array([])
 
     for i in range(term_lower_bound, term_limit + 1):
@@ -276,7 +279,7 @@ def a_vector_LP(m_dict, term_limit, term_lower_bound, diff_error = .001, diff_st
         b_ub = -1*np.repeat(diff_error, len(diff_mat[:,0]))
 
         # Solving the linear program w/ scipy (for now)
-        lp_sol = linprog(c, A_ub=A_ub, b_ub=b_ub, A_eq=A_eq, b_eq=b_eq, method='simplex', options={"maxiter":5000, "tol":1.0e-5,"disp": False})
+        lp_sol = linprog(c, A_ub=A_ub, b_ub=b_ub, A_eq=A_eq, b_eq=b_eq, method='simplex', options={"maxiter":maxiter, "tol":tolerance,"disp": False})
 
         # Consolidating solution back into the a vector
         tempLP = lp_sol.x[(2 * len(Y.iloc[:, 1])):(len(lp_sol.x)+1)]
