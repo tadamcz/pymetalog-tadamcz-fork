@@ -147,9 +147,18 @@ def dmetalog(m, q, term = 3):
     raise TypeError('Error: term must be a single positive numeric interger contained in the metalog object. Available '
                     'terms are: '+' '.join(map(str, valid_terms)))
 
-  qs = list(map(lambda qi: newtons_method_metalog(q=qi, m=m, term=term), q))
-  ds = list(map(lambda yi: pdfMetalog_density(y=yi, m=m, t=term), qs))
-
+  qs = []
+  for item in q:
+    try:
+      qs.append(newtons_method_metalog(q=item, m=m, term=term))
+    except StopIteration as e:
+      qs.append(e)
+  ds = []
+  for item in qs:
+    try:
+      ds.append(pdfMetalog_density(y=item, m=m, t=term))
+    except TypeError as e:
+      ds.append(e)
   return (ds)
 
 
@@ -182,7 +191,12 @@ def pmetalog(m, q, term = 3):
     raise TypeError('Error: term must be a single positive numeric interger contained in the metalog object. Available '
                     'terms are: '+' '.join(map(str, valid_terms)))
 
-  qs = list(map(lambda qi: newtons_method_metalog(q=qi, m=m, term=term), q))
+  qs = []
+  for item in q:
+    try:
+      qs.append(newtons_method_metalog(q=item, m=m, term=term))
+    except Exception as e:
+      qs.append(e)
   return (qs)
 
 
