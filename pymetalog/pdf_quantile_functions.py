@@ -94,8 +94,8 @@ def pdf_quantile_builder(temp, y, term_limit, bounds, boundedness):
     q_dict['M'] = M
     q_dict['y'] = y
 
-    # PDF validation
-    q_dict['valid'] = pdfMetalogValidation(q_dict['m'])
+    # PDF and CDF validation
+    q_dict['valid'] = 'yes' if (pdfMetalogValidation(q_dict['m']) and cdfMetalogValidation(q_dict['M'])) else 'no'
 
     return q_dict
 
@@ -112,6 +112,14 @@ def pdfMetalogValidation(x):
     """
     y = np.min(x)
     if (y >= 0):
-        return('yes')
+        return True
     else:
-        return('no')
+        return False
+
+def cdfMetalogValidation(cdf):
+    prev = -np.inf
+    for item in cdf:
+        if item<prev:
+            return False
+        prev = item
+    return True
