@@ -280,7 +280,7 @@ def a_vector_LP(m_dict, term_limit, term_lower_bound, diff_error = .001, diff_st
         b_ub = -1*np.repeat(diff_error, len(diff_mat[:,0]))
 
         # Solving the linear program w/ scipy (for now)
-        lp_sol = linprog(c, A_ub=A_ub, b_ub=b_ub, A_eq=A_eq, b_eq=b_eq, method='simplex', options={"maxiter":maxiter, "tol":tolerance,"disp": False})
+        lp_sol = linprog(c, A_ub=A_ub, b_ub=b_ub, A_eq=A_eq, b_eq=b_eq, options={"maxiter":maxiter, "tol":tolerance,"disp": False})
 
         # Consolidating solution back into the a vector
         tempLP = lp_sol.x[(2 * len(Y.iloc[:, 1])):(len(lp_sol.x)+1)]
