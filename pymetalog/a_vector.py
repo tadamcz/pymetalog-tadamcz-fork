@@ -169,6 +169,7 @@ def a_vector_OLS_and_LP(m_dict,
 
         # build a y vector for smaller data sets
         if len(z) < 100:
+            # TODO: this uses step_len to determine the y-bounds as well as the actual step length. Should have a parameter for the bounds. Could maybe get rid of step_len then.
             y2 = np.linspace(step_len, 1 - step_len, int((1 - step_len) / step_len))
             tailstep = step_len / 10
             y1 = np.linspace(tailstep, (min(y2) - tailstep), int((min(y2) - tailstep) / tailstep))
@@ -213,8 +214,8 @@ def a_vector_LP(m_dict, term_limit, term_lower_bound, diff_error = .001, diff_st
     """TODO: write docstring
 
     """
-    maxiter = 1000
-    tolerance = 1e-4
+    maxiter = int(2e3)
+    tolerance = 1e-5
     cnames = np.array([])
 
     for i in range(term_lower_bound, term_limit + 1):
