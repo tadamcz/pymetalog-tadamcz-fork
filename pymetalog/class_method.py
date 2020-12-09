@@ -222,8 +222,8 @@ def qmetalog(m, y, term = 3):
   valid_terms = np.asarray(m['Validation']['term'])
   valid_terms_printout = " ".join(str(t) for t in valid_terms)
 
-  if type(y) != list:
-    raise TypeError('Error: y must be a list of numeric values')
+  if not isinstance(y,(list,np.ndarray)):
+    raise TypeError('Error: y must be a list or array of numeric values')
   y = np.asarray(y)
   if (all(isinstance(x, (int, float, complex)) for x in y)) != True or (max(y) >= 1) or (min(y) <= 0):
     raise TypeError('Error: y or all elements in y must be positive numeric values between 0 and 1')
