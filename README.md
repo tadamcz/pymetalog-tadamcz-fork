@@ -1,8 +1,7 @@
 pymetalog
 ================
-Colin Smith, Travis Jefferies, Isaac J. Faber
-
-pip install pymetalog
+The original pyetmalog package is by Colin Smith, Travis Jefferies, Isaac J. Faber.
+This fork is a work in progress.
 
 ### The Python Metalog Distribution
 
