@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-
+from scipy import optimize
 
 def MLprobs(x_old, step_len):
   """ Returns the quantile values x['x'] and corresponding bins x['y'].
@@ -286,7 +286,7 @@ def diffMatMetalog(term_limit, step_len):
 
   return new_Diff
 
-def newtons_method_metalog(m,q,term, bounds=None, boundedness=None):
+def get_p_numerical_solver(m, q, term, bounds=None, boundedness=None):
   """TODO: write docstring
 
   """
@@ -304,33 +304,14 @@ def newtons_method_metalog(m,q,term, bounds=None, boundedness=None):
   except:
     a=m
 
-  #TODO there should be setters for at least some of these hyperparameters
-  alpha_step = 0.5
-  err = 1e-10
-  temp_err = 0.1
-  y_now = 0.5
-  maxiter = 1000
+  f_to_zero = lambda y: quantileMetalog(a,y,term,bounds,boundedness)-q
+  y_sol = optimize.brentq(f_to_zero,0,1,full_output=True)
+  if y_sol[1].converged:
+      y_sol = y_sol[0]
+  else:
+      y_sol = y_sol[1]
 
-  i = 1
-  while(temp_err>err):
-    frist_function = (quantileMetalog(a,y_now,term,bounds,boundedness)-q)
-    derv_function = pdfMetalog(a,y_now,term,bounds,boundedness)
-    y_next = y_now-alpha_step*(frist_function*derv_function)
-    temp_err = abs((y_next-y_now))
-
-    if y_next > 1:
-      y_next = 0.99999
-
-    if y_next < 0:
-      y_next = 0.000001
-
-    y_now = y_next
-    i = i+1
-
-    if i > maxiter:
-      raise StopIteration('Approximation taking too long, quantile value: '+str(q)+' is to far from distribution median. Try plot() to see distribution.')
-
-  return(y_now)
+  return y_sol
 
 def pdfMetalog_density(m,t,y):
   m = m.output_dict

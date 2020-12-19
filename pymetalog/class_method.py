@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from .support import newtons_method_metalog, pdfMetalog_density
+from .support import get_p_numerical_solver, pdfMetalog_density
 
 def summary(m):
   """ Prints information about the fitted metalog m.
@@ -150,7 +150,7 @@ def dmetalog(m, q, term = 3):
   qs = []
   for item in q:
     try:
-      qs.append(newtons_method_metalog(q=item, m=m, term=term))
+      qs.append(get_p_numerical_solver(q=item, m=m, term=term))
     except StopIteration as e:
       qs.append(e)
   ds = []
@@ -194,7 +194,7 @@ def pmetalog(m, q, term = 3):
   qs = []
   for item in q:
     try:
-      qs.append(newtons_method_metalog(q=item, m=m, term=term))
+      qs.append(get_p_numerical_solver(q=item, m=m, term=term))
     except Exception as e:
       qs.append(e)
   return (qs)

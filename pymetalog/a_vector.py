@@ -3,8 +3,7 @@ import numpy as np
 import scipy as sp
 from scipy.optimize import linprog, minimize, NonlinearConstraint
 from .pdf_quantile_functions import pdf_quantile_builder
-from .support import diffMatMetalog, pdfMetalog, quantileMetalog, newtons_method_metalog
-
+from .support import diffMatMetalog, pdfMetalog, quantileMetalog, get_p_numerical_solver
 import time
 import warnings
 
@@ -296,7 +295,7 @@ def a_vector_MLE(a, y, term, m_dict, bounds, boundedness):
     """TODO: write docstring
 
     """
-    ym = [newtons_method_metalog(a, xi, term, bounds, boundedness) for xi in m_dict['dataValues']['x']]
+    ym = [get_p_numerical_solver(a, xi, term, bounds, boundedness) for xi in m_dict['dataValues']['x']]
 
     def MLE_quantile_constraints(x):
         M = [quantileMetalog(x[:term], yi, term, bounds=bounds, boundedness=boundedness) for yi in x[term:]]
