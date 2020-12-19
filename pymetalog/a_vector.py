@@ -179,11 +179,11 @@ def a_vector_OLS_and_LP(m_dict,
         # Get the dict and quantile values back for validation
         temp_dict = pdf_quantile_builder(temp, y=y, term_limit=i, bounds=bounds, boundedness=boundedness)
 
-        # If it not a valid pdf run and the OLS version was used the LP version
+        # If it not a valid pdf run and the OLS version was used, use the numerical least squares
         if (temp_dict['valid'] == 'no') and (fit_method != 'OLS'):
-            temp = a_vector_LP(m_dict, term_limit=i, term_lower_bound=i, diff_error=diff_error, diff_step=diff_step)
-            temp = np.append(temp, np.zeros(term_limit-i))
-            methodFit = 'Linear Program'
+            temp = a_vector_LS(temp,y,i,m_dict,bounds,boundedness)
+            methodFit = 'Numerical least squares'
+
 
             # Get the dict and quantile values back for validation
             temp_dict = pdf_quantile_builder(temp, y=y, term_limit=i, bounds=bounds, boundedness=boundedness)
@@ -326,6 +326,31 @@ def a_vector_MLE(a, y, term, m_dict, bounds, boundedness):
 
     return out_temp
 
+def a_vector_LS(a, y, term, m_dict, bounds, boundedness):
+    probs = m_dict['dataValues']['probs']
 
+    def invalid_score(a_candidate):
+        v = pdf_quantile_builder(a_candidate, y=y, term_limit=term, bounds=bounds, boundedness=boundedness)
+        count = v['invalid_count']
+        logcount = np.log(count+1)
+        return logcount
 
+    def loss_f(a_candidate):
+        ym = [get_p_numerical_solver(a_candidate, xi, term, bounds, boundedness) for xi in m_dict['dataValues']['x']]
+        sse = np.sum((ym-probs)**2)
+        return sse
 
+    a0 = a
+    validity_constraint = NonlinearConstraint(invalid_score,0,0)
+    h = minimize(loss_f,a0,constraints=validity_constraint, method='trust-constr',
+                 options={
+                     'xtol':1e-3,
+                     'initial_constr_penalty':25,
+                     'initial_tr_radius':25,
+                 })
+    print('time',h.execution_time)
+
+    if h.success:
+        return h.x
+    else:
+        raise Exception(h)

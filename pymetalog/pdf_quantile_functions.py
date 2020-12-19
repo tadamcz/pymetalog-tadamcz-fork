@@ -96,7 +96,7 @@ def pdf_quantile_builder(temp, y, term_limit, bounds, boundedness):
 
     # PDF and CDF validation
     q_dict['valid'] = 'yes' if (pdfMetalogValidation(q_dict['m']) and cdfMetalogValidation(q_dict['M'])) else 'no'
-
+    q_dict['invalid_count'] = cdfMetalogValidation_scalar(q_dict['M'])
     return q_dict
 
 def pdfMetalogValidation(x):
@@ -123,3 +123,12 @@ def cdfMetalogValidation(cdf):
             return False
         prev = item
     return True
+
+def cdfMetalogValidation_scalar(cdf):
+    prev = -np.inf
+    count = 0
+    for item in cdf:
+        if item<prev:
+            count += prev-item
+        prev = item
+    return count
