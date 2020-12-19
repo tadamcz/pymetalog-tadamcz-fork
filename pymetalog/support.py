@@ -186,10 +186,17 @@ def quantileMetalog(a, y, t, bounds = [], boundedness = 'u'):
 
   """
   if y <= 0:
-      y = .00001
+      if boundedness == 'sl' or boundedness == 'b':
+          return bounds[0]
+      else:
+          return -np.inf
 
   if y >= 1:
-      y = .99999
+      if boundedness == 'su' or boundedness == 'b':
+          return bounds[1]
+      else:
+          return np.inf
+
   # Some values for calculation
   f = y - 0.5
   l = np.log(y / (1 - y))
